@@ -1,3 +1,4 @@
+// EXO 1
 function myReplace(str, before, after) {
     if (before[0] === before[0].toUpperCase()) {
        after = after[0].toUpperCase() + after.slice(1);
@@ -13,7 +14,7 @@ console.log(myReplace("He is Sleeping on the couch", "Sleeping", "sitting"));
 console.log(myReplace("His name is Tom", "Tom", "john"));
 console.log(myReplace("Let us get back to more Coding", "Coding", "algorithms"));
 
-
+// EXO 2
 let str = "je suis un potit blagueur"
 function spinalCase(str) {
   return str
@@ -28,6 +29,7 @@ console.log(spinalCase("The_Andy_Griffith_Show"));
 console.log(spinalCase("Teletubbies say Eh-oh"));
 console.log(spinalCase("AllThe-small Things"));
 
+// EXO 3
 function sumAll(arr) {
     const min = Math.min(...arr);
     const max = Math.max(...arr);
@@ -45,7 +47,7 @@ function sumAll(arr) {
   console.log(sumAll([5, 10]));
   console.log(sumAll([10, 5]));
 
-
+// EXO 4
   function smallestCommons(arr) {
     // s'assurer que les nombres sont dans l'ordre croissant
     arr.sort((a, b) => a - b);
@@ -77,4 +79,65 @@ console.log(smallestCommons([2, 10])); // 2520
 console.log(smallestCommons([1, 13])); // 360360
 console.log(smallestCommons([23, 18])); // 6056820
 
+// EXO 5
+// Mastermind en JavaScript
 
+
+const COLORS = ['R', 'G', 'B', 'Y', 'O', 'P']; 
+const CODE_LENGTH = 4;
+const MAX_TURNS = 4;
+
+// 1. Génération du code secret
+function generateSecret() {
+  const secret = [];
+  for (let i = 0; i < CODE_LENGTH; i++) {
+    const idx = Math.floor(Math.random() * COLORS.length);
+    secret.push(COLORS[idx]);
+  }
+  return secret;
+}
+
+// 2. Feedback : pions noirs et blancs
+function getFeedback(secret, guess) {
+  const black = secret.filter((c, i) => c === guess[i]).length;
+  // Comptage pour blancs
+  const secretRest = [];
+  const guessRest = [];
+  secret.forEach((c, i) => { if (c !== guess[i]) secretRest.push(c); });
+  guess.forEach((c, i) => { if (c !== guess[i]) guessRest.push(c); });
+  // Blancs = pour chaque couleur dans guessRest, min(nombre dans secretRest, dans guessRest)
+  let white = 0;
+  COLORS.forEach(color => {
+    const countSecret = secretRest.filter(c => c === color).length;
+    const countGuess = guessRest.filter(c => c === color).length;
+    white += Math.min(countSecret, countGuess);
+  });
+  return { black, white };
+}
+
+// 3. Boucle de jeu
+function playMastermind() {
+  const secret = generateSecret();
+  console.log("=== Bienvenue au Mastermind! ===");
+  console.log(`Couleurs possibles: ${COLORS.join(', ')}`);
+  console.log(`Entrez un code de ${CODE_LENGTH} lettres (ex: RGBY).`);
+
+  for (let turn = 1; turn <= MAX_TURNS; turn++) {
+    const input = prompt(`Tour ${turn}/${MAX_TURNS}: Votre proposition ?`).toUpperCase();
+    if (!input || input.length !== CODE_LENGTH) {
+      console.log('Entrée invalide. Réessayez.');
+      turn--; continue;
+    }
+    const guess = input.split('');
+    const { black, white } = getFeedback(secret, guess);
+    console.log(`Résultat: ${black} noir(s), ${white} blanc(s)`);
+    if (black === CODE_LENGTH) {
+      console.log(`Bravo! Vous avez trouvé en ${turn} tours.`);
+      return;
+    }
+  }
+  console.log(`Dommage! Le code secret était ${secret.join('')}.`);
+}
+
+// Lancer le jeu
+playMastermind();
